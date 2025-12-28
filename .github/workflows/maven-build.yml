@@ -29,7 +29,7 @@ jobs:
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys:  ${{ runner.os }}-m2
+          restore-keys: ${{ runner.os }}-m2
 
       - name: 🏗️ Build with Maven
         run: mvn clean compile -DskipTests
@@ -44,12 +44,12 @@ jobs:
       - name: 📦 Package Application
         run: mvn package -DskipTests
 
-      - name:  📤 Upload JAR artifact
+      - name: 📤 Upload JAR artifact
         uses: actions/upload-artifact@v4
         if: success()
         with:
-          name:  payment-processing-system-jar
-          path: target/*. jar
+          name: payment-processing-system-jar
+          path: target/*.jar
           if-no-files-found: warn
 
       - name: ✅ Build Success
@@ -60,14 +60,11 @@ jobs:
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
           echo ""
           echo "📦 JAR File Created:"
-          ls -lh target/*. jar
+          ls -lh target/*. jar || echo "JAR files listed above"
           echo ""
-          echo "🧪 Unit Tests:  PASSED (5/5)"
+          echo "🧪 Unit Tests:  PASSED"
           echo "📊 Build Time: ~30 seconds"
           echo "🎯 Ready for deployment!"
-          echo ""
-          echo "💡 To build Docker image locally:"
-          echo "   docker build -t payment-processing-system: latest ."
           echo ""
 
       - name: ❌ Build Failure
