@@ -1,0 +1,41 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: ☕ Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: 🏗️ Build with Maven
+        run: mvn clean package -DskipTests
+
+      - name: 📦 Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: target/*.jar
+          body: |
+            ## 🎉 Release ${{ github.ref_name }}
+            
+            ### 📦 Changes in this release:
+            - Payment Processing System JAR
+            - Production-ready build
+            
+            ### 🚀 Quick Start:
+            ```bash
+            java -jar payment-processing-system-1.0.0.jar
+            ```
+        env:
+          GITHUB_TOKEN:  ${{ secrets.GITHUB_TOKEN }}

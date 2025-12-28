@@ -343,7 +343,6 @@ This project is licensed under the MIT License.
 
 **Built with ❤️ using Spring Boot**
 
-
 # Create backup
 ```
 cp README.md README.md. backup
