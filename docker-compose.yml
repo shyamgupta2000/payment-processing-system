@@ -7,19 +7,15 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root123
       MYSQL_DATABASE: payment_db
-      MYSQL_USER: shyam_user
-      MYSQL_PASSWORD:  Shyam@123
+      MYSQL_USER: payment_user
+      MYSQL_PASSWORD: Payment@123
     ports:
       - "3306:3306"
     volumes:
       - mysql-data:/var/lib/mysql
     networks:
       - payment-network
-    healthcheck:
-      test:  ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    command: --default-authentication-plugin=mysql_native_password
 
   activemq:
     image: apache/activemq-classic:latest
@@ -27,41 +23,29 @@ services:
     ports:
       - "61616:61616"
       - "8161:8161"
-    environment:
-      ACTIVEMQ_ADMIN_LOGIN: admin
-      ACTIVEMQ_ADMIN_PASSWORD: admin
     networks:
       - payment-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8161"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   payment-app:
     build: .
     container_name: payment-processing-system
     depends_on:
-      mysql:
-        condition: service_healthy
-      activemq:
-        condition: service_healthy
+      - mysql
+      - activemq
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/payment_db? allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: payment_user
+      SPRING_DATASOURCE_PASSWORD: Payment@123
+      SPRING_ACTIVEMQ_BROKER_URL: tcp://activemq:61616
     ports:
       - "8080:8080"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/payment_db? useSSL=false&serverTimezone=UTC
-      SPRING_DATASOURCE_USERNAME: shyam_user
-      SPRING_DATASOURCE_PASSWORD: Shyam@123
-      SPRING_ACTIVEMQ_BROKER_URL: tcp://activemq:61616
-      SPRING_ACTIVEMQ_USER: admin
-      SPRING_ACTIVEMQ_PASSWORD: admin
     networks:
       - payment-network
-    restart: unless-stopped
-
-volumes:
-  mysql-data:
+    restart: on-failure
 
 networks:
   payment-network:
     driver: bridge
+
+volumes:
+  mysql-data:

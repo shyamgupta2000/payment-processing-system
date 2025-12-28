@@ -1,7 +1,30 @@
-target/
-. mvn/
+# Exclude target directory contents but keep JAR files
+target/classes/
+target/test-classes/
+target/maven-status/
+target/maven-archiver/
+target/generated-sources/
+target/generated-test-sources/
+target/surefire-reports/
+
+# Maven wrapper
+.mvn/
+
+# IDE files
 .idea/
 *. iml
+
+# Git files
 .git/
 .gitignore
-README.md
+
+# Documentation
+*. md
+! README.md
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
