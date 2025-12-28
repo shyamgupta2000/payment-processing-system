@@ -1,4 +1,4 @@
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:17-jdk-slim
 
 LABEL maintainer="shyamgupta2000"
 LABEL application="payment-processing-system"
